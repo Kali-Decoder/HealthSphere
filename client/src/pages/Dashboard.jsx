@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import { Link } from "react-router-dom";
 const Dashboard = () => {
   const [image, setImage] = useState(""); // State to store the selected image as a data URL
 
@@ -28,44 +28,15 @@ const Dashboard = () => {
             <h2 className="text-blue-500 uppercase font-bold">Health-Sphere</h2>
             <h1 className="text-4xl font-semibold mb-2">Dashboard</h1>
           </div>
-          <div className="flex flex-wrap items-start justify-end -mb-3">
-            <button className="inline-flex px-5 py-3 text-white bg-blue-600 hover:bg-blue-700 focus:bg-blue-700 rounded-md ml-6 mb-3">
-              <svg
-                aria-hidden="true"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                className="flex-shrink-0 h-6 w-6 text-white -ml-1 mr-2"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                />
-              </svg>
-              Edit Details
-            </button>
-          </div>
+         
         </div>
-        <div className="grid grid-cols-2 gap-0 mt-8">
-          <div className="profile-pic mt-8">
-            <label className="-label" htmlFor="file">
-              <span className="glyphicon glyphicon-camera"></span>
-              <span>Change Image</span>
-            </label>
-            <input
-              id="file"
-              type="file"
-              accept="image/*"
-              
-              onChange={handleImageUpload}
-            />
-            {image && <img src={image} className="border shadow-2xl border-blue-600 " width="400" alt="profile pic" />}
+        <div className="grid grid-cols-2 gap-0">
+          <div className="profile-pic ">
+            {image ? <img src={image} className="border shadow-2xl  " width="400" alt="profile pic" />: <img src="http://i.pravatar.cc/500?img=7" className="border shadow-2xl  " width="400" alt="profile pic" />}
           </div>
 
           <div>
-            <section className="grid grid-cols-2 gap-1">
+            <section className="grid grid-cols-2 gap-1 mt-5">
               <div className="flex items-center p-8 bg-white rounded-lg">
                 <div className="inline-flex flex-shrink-0 items-center justify-center h-16 w-16 text-blue-600 bg-purple-100 rounded-full mr-6">
                   <svg
@@ -134,6 +105,25 @@ const Dashboard = () => {
                 </span>
                 <span className="block text-gray-500">Email</span>
               </div>
+            </div>
+            <div className=" flex justify-end">
+            <button className="inline-flex mt-8 px-5 py-3 text-white bg-blue-600 hover:bg-blue-700 focus:bg-blue-700 rounded-md ml-6 mb-3">
+              <svg
+                aria-hidden="true"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                className="flex-shrink-0 h-6 w-6 text-white -ml-1 mr-2"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                />
+              </svg>
+              <Link to="/edit-profile">Edit Profile</Link>
+            </button>
             </div>
           </div>
         </div>

@@ -1,21 +1,28 @@
 const bcrypt = require("bcryptjs");
 const User = require("../models/userschema");
+const bodyParser = require("body-parser");
+const multer = require("multer");
+
+const storage = multer.memoryStorage(); // Store images in memory (you can configure file storage options)
+const upload = multer({ storage });
+
 const registerUser = async (req, res) => {
-  const { fname,lname, email, password } = req.body;
-  
+  const { fname, lname, email, password } = req.body;
+
   try {
     const oldUser = await User.findOne({ email });
     console.log(oldUser);
     if (oldUser) {
       // User with the same email already exists
       return res
-      .status(400)
-      .json({ error: "User with this email already exists" });
+        .status(400)
+        .json({ error: "User with this email already exists" });
     }
     const encryptedPassword = await bcrypt.hash(password, 10);
 
     const newUser = await User.create({
-      fname,lname,
+      fname,
+      lname,
       email,
       password: encryptedPassword,
     });
@@ -33,7 +40,7 @@ const registerUser = async (req, res) => {
 
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
-  console.log(email,password);
+  console.log(email, password);
   try {
     const user = await User.findOne({ email });
 
@@ -56,5 +63,22 @@ const loginUser = async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 };
+const user = {
+  name: "Neeraj Choubisa",
+  email: "neerajchoubisa876@gmail.com",
+  profileImage: null, // Add a profile image field
+};
 
-module.exports = { registerUser, loginUser };
+const updateDetails = async (req, res) => {
+  const updatedData = req.body;
+  user.name = updatedData.name;
+  user.email = updatedData.email;
+
+  if (req.file) {
+    user.profileImage = req.file.buffer; // Store image data in the user object
+  }
+
+  res.json({ message: "Profile updated successfully", user });
+};
+
+module.exports = { registerUser, loginUser, updateDetails };
