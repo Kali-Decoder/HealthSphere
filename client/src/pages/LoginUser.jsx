@@ -1,49 +1,53 @@
 import React, { useState } from "react";
-import axiosInstance from "../utils/axiosRequest";
-import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
-const RegistrationPage = () => {
+import {toast} from "react-toastify";
+import axiosInstance from "../utils/axiosRequest";
+import {useNavigate} from "react-router-dom";
+const LoginUser = () => {
+    const history = useNavigate();
   const [data, setData] = useState({
-    fname: "",
-    lname: "",
     email: "",
     password: "",
-    cpassword: "",
   });
-
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setData({ ...data, [name]: value });
   };
-  const registerUser = async (event) => {
+  const loginUser = async (event) => {
     event.preventDefault();
-    if (!data.cpassword || !data.password || !data.email || !data.fname || !data.lname) {
+    console.log(data);
+    if (!data.password || !data.email) {
       toast.error("Incomplete Details Provided");
       return;
     }
-    if(data.password !== data.cpassword){
-      toast.error("Passwords do not match");
-      return;
-    }
-    
-    const id = toast.loading("Registering...");
+    const id = toast.loading("Logging in...");
     try {
-      const endpoint = "api/register";
+      const endpoint = "api/login";
       const requestData = data;
       let response = await axiosInstance.post(endpoint, requestData);
-      if (response.status === 201) {
+      if (response.status === 200) {
         toast.update(id, {
-          render: "Registration Successful",
+          render: "Login Successful",
           type: "success",
           isLoading: false,
           autoClose: 2000,
         });
+        history("/dashboard");
         return;
       }
     } catch (error) {
-      if (error.response.status === 400) {
+      if (error.response.status === 404) {
         toast.update(id, {
-          render: "User with this email already exists",
+          render: "User not found",
+          type: "error",
+          isLoading: false,
+          autoClose: 2000,
+        });
+        history("/register");
+        return;
+      } else if (error.response.status === 401) {
+        toast.update(id, {
+          render: "Invalid password",
           type: "error",
           isLoading: false,
           autoClose: 2000,
@@ -59,7 +63,7 @@ const RegistrationPage = () => {
         return;
       }
     }
-  };
+  }
   return (
     <>
       <div className="font-sans antialiased bg-grey-lightest">
@@ -70,42 +74,6 @@ const RegistrationPage = () => {
                 Register for a free account
               </div>
               <div className="py-4 px-8">
-                <div className="flex mb-4">
-                  <div className="w-1/2 mr-1">
-                    <label
-                      className="block text-grey-darker text-sm font-bold mb-2"
-                      for="first_name"
-                    >
-                      First Name
-                    </label>
-                    <input
-                      className="appearance-none border rounded w-full py-2 px-3 text-grey-darker"
-                      id="fname"
-                      type="text"
-                      name="fname"
-                      onChange={handleInputChange}
-                      value={data.fname}
-                      placeholder="Your first name"
-                    />
-                  </div>
-                  <div className="w-1/2 ml-1">
-                    <label
-                      className="block text-grey-darker text-sm font-bold mb-2"
-                      for="last_name"
-                    >
-                      Last Name
-                    </label>
-                    <input
-                      className="appearance-none border rounded w-full py-2 px-3 text-grey-darker"
-                      id="last_name"
-                      type="text"
-                      name="lname"
-                      value={data.lname}
-                      onChange={handleInputChange}
-                      placeholder="Your last name"
-                    />
-                  </div>
-                </div>
                 <div className="mb-4">
                   <label
                     className="block text-grey-darker text-sm font-bold mb-2"
@@ -139,47 +107,26 @@ const RegistrationPage = () => {
                     onChange={handleInputChange}
                     placeholder="Your secure password"
                   />
-                  <p className="text-grey text-xs mt-1">
-                    At least 6 characters
-                  </p>
+                 
                 </div>
-                <div className="mb-4">
-                  <label
-                    className="block text-grey-darker text-sm font-bold mb-2"
-                    for="password"
-                  >
-                    Confirm Password
-                  </label>
-                  <input
-                    className="appearance-none border rounded w-full py-2 px-3 text-grey-darker"
-                    id="password"
-                    type="password"
-                    name="cpassword"
-                    value={data.cpassword}
-                    onChange={handleInputChange}
-                    placeholder="Your secure password"
-                  />
-                  <p className="text-grey text-xs mt-1">
-                    At least 6 characters
-                  </p>
-                </div>
+
                 <div className="flex items-center justify-between mt-8">
                   <button
                     className="bg-blue hover:bg-blue-dark text-black border font-bold py-2 px-4 rounded"
                     type="submit"
-                    onClick={registerUser}
+                    onClick={loginUser}
                   >
-                    Sign Up
+                    Log in
                   </button>
                 </div>
               </div>
             </div>
             <p className="text-center my-4">
               <Link
-                to="/login"
+                to="/"
                 className="text-grey-dark text-sm no-underline hover:text-grey-darker"
               >
-                I already have an account
+                Sign-up for an account
               </Link>
             </p>
           </div>
@@ -198,4 +145,4 @@ const RegistrationPage = () => {
   );
 };
 
-export default RegistrationPage;
+export default LoginUser;

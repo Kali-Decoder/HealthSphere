@@ -33,6 +33,7 @@ const registerUser = async (req, res) => {
 
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
+  console.log(email,password);
   try {
     const user = await User.findOne({ email });
 
@@ -44,7 +45,7 @@ const loginUser = async (req, res) => {
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (isPasswordValid) {
-      return res.status(200).json({ status: "ok", token });
+      return res.status(200).json({ status: "ok" });
     } else {
       // Invalid password
       return res.status(401).json({ error: "Invalid password" });
