@@ -1,6 +1,55 @@
-import React from "react";
-
+import React, { useState } from "react";
+import axiosInstance from "../utils/axiosRequest";
+import { toast } from "react-toastify";
 const RegistrationPage = () => {
+  const [data, setData] = useState({
+    fname: "",
+    lname: "",
+    email: "",
+    password: "",
+    cpassword: "",
+  });
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setData({ ...data, [name]: value });
+  };
+  const registerUser = async (event) => {
+    event.preventDefault();
+    const endpoint = "api/register";
+    const requestData = data;
+    const id = toast.loading("Registering...");
+    try {
+      let response = await axiosInstance.post(endpoint, requestData);
+      if (response.status === 201) {
+        toast.update(id, {
+          render: "Registration Successful",
+          type: "success",
+          isLoading: false,
+          autoClose: 2000,
+        });
+        return;
+      }
+    } catch (error) {
+      if (error.response.status === 400) {
+        toast.update(id, {
+          render: "User with this email already exists",
+          type: "error",
+          isLoading: false,
+          autoClose: 2000,
+        });
+        return;
+      } else {
+        toast.update(id, {
+          render: "Internal server error",
+          type: "error",
+          isLoading: false,
+          autoClose: 2000,
+        });
+        return;
+      }
+    }
+  };
   return (
     <>
       <div className="font-sans antialiased bg-grey-lightest">
@@ -21,8 +70,11 @@ const RegistrationPage = () => {
                     </label>
                     <input
                       className="appearance-none border rounded w-full py-2 px-3 text-grey-darker"
-                      id="first_name"
+                      id="fname"
                       type="text"
+                      name="fname"
+                      onChange={handleInputChange}
+                      value={data.fname}
                       placeholder="Your first name"
                     />
                   </div>
@@ -37,6 +89,9 @@ const RegistrationPage = () => {
                       className="appearance-none border rounded w-full py-2 px-3 text-grey-darker"
                       id="last_name"
                       type="text"
+                      name="lname"
+                      value={data.lname}
+                      onChange={handleInputChange}
                       placeholder="Your last name"
                     />
                   </div>
@@ -52,6 +107,9 @@ const RegistrationPage = () => {
                     className="appearance-none border rounded w-full py-2 px-3 text-grey-darker"
                     id="email"
                     type="email"
+                    name="email"
+                    value={data.email}
+                    onChange={handleInputChange}
                     placeholder="Your email address"
                   />
                 </div>
@@ -66,6 +124,9 @@ const RegistrationPage = () => {
                     className="appearance-none border rounded w-full py-2 px-3 text-grey-darker"
                     id="password"
                     type="password"
+                    name="password"
+                    value={data.password}
+                    onChange={handleInputChange}
                     placeholder="Your secure password"
                   />
                   <p className="text-grey text-xs mt-1">
@@ -83,6 +144,9 @@ const RegistrationPage = () => {
                     className="appearance-none border rounded w-full py-2 px-3 text-grey-darker"
                     id="password"
                     type="password"
+                    name="cpassword"
+                    value={data.cpassword}
+                    onChange={handleInputChange}
                     placeholder="Your secure password"
                   />
                   <p className="text-grey text-xs mt-1">
@@ -91,8 +155,9 @@ const RegistrationPage = () => {
                 </div>
                 <div className="flex items-center justify-between mt-8">
                   <button
-                    className="bg-blue hover:bg-blue-dark text-white font-bold py-2 px-4 rounded-full"
+                    className="bg-blue hover:bg-blue-dark text-black border font-bold py-2 px-4 rounded"
                     type="submit"
+                    onClick={registerUser}
                   >
                     Sign Up
                   </button>
