@@ -3,7 +3,9 @@ import { Link } from "react-router-dom";
 import {toast} from "react-toastify";
 import axiosInstance from "../utils/axiosRequest";
 import {useNavigate} from "react-router-dom";
+import { useDataContext } from "../Context/DataContext";
 const LoginUser = () => {
+  const {getUserData} = useDataContext();
     const history = useNavigate();
   const [data, setData] = useState({
     email: "",
@@ -15,7 +17,6 @@ const LoginUser = () => {
   };
   const loginUser = async (event) => {
     event.preventDefault();
-    console.log(data);
     if (!data.password || !data.email) {
       toast.error("Incomplete Details Provided");
       return;
@@ -32,6 +33,7 @@ const LoginUser = () => {
           isLoading: false,
           autoClose: 2000,
         });
+        await getUserData(requestData.email);
         history("/dashboard");
         return;
       }

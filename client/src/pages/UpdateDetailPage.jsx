@@ -1,36 +1,49 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { useDataContext } from "../Context/DataContext";
+import axios from "axios";
 const UpdateDetailPage = () => {
-  const [data, setData] = useState({
-    fname: "",
-    lname: "",
-    email: "",
-    password: "",
-    cpassword: "",
-  });
+  const { loggedUserData } = useDataContext();
+  const [file, setFile] = useState(null);
+  const [fname, setFname] = useState(loggedUserData?.fname);
+  const [lname, setLname] = useState(loggedUserData?.lname);
 
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    setData({ ...data, [name]: value });
-  };
-  const [previewImage, setPreviewImage] = useState(
-    "http://i.pravatar.cc/500?img=7" // Default preview image
-  );
-
-  // Function to handle image upload and preview
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-
-    if (file) {
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
       const reader = new FileReader();
 
       reader.onload = () => {
         setPreviewImage(reader.result);
       };
 
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(selectedFile);
+    }
+    setFile(selectedFile);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+    formData.append("fname", fname);
+    formData.append("lname", lname);
+    formData.append("image", file);
+
+    try {
+      const response = await axios.post("http://localhost:8080/api/profile/update", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+    } catch (error) {
+      console.error("Error updating profile:", error);
     }
   };
+  const [previewImage, setPreviewImage] = useState(
+    "http://i.pravatar.cc/500?img=7" // Default preview image
+  );
+
   return (
     <>
       <div className="font-sans antialiased bg-grey-lightest">
@@ -41,25 +54,26 @@ const UpdateDetailPage = () => {
                 Update Your Details
               </div>
               <div className="py-4 px-8">
-              <div className="avatar-upload">
-      <div className="avatar-edit">
-        <input
-          type="file"
-          id="imageUpload"
-          accept=".png, .jpg, .jpeg"
-          onChange={handleImageUpload}
-        />
-        <label htmlFor="imageUpload"></label>
-      </div>
-      <div className="avatar-preview">
-        <div
-          id="imagePreview"
-          style={{
-            backgroundImage: `url('${previewImage}')`,
-          }}
-        ></div>
-      </div>
-    </div>
+                <div className="avatar-upload">
+                  <div className="avatar-edit">
+                    <input
+                      type="file"
+                      id="imageUpload"
+                      name="image"
+                      accept=".png, .jpg, .jpeg"
+                      onChange={handleFileChange}
+                    />
+                    <label htmlFor="imageUpload"></label>
+                  </div>
+                  <div className="avatar-preview">
+                    <div
+                      id="imagePreview"
+                      style={{
+                        backgroundImage: `url('${previewImage}')`,
+                      }}
+                    ></div>
+                  </div>
+                </div>
                 <div className="flex mb-4">
                   <div className="w-1/2 mr-1">
                     <label
@@ -73,8 +87,8 @@ const UpdateDetailPage = () => {
                       id="fname"
                       type="text"
                       name="fname"
-                      onChange={handleInputChange}
-                      value={data.fname}
+                      onChange={(e) => setFname(e.target.value)}
+                      value={fname}
                       placeholder="Your first name"
                     />
                   </div>
@@ -90,8 +104,8 @@ const UpdateDetailPage = () => {
                       id="last_name"
                       type="text"
                       name="lname"
-                      value={data.lname}
-                      onChange={handleInputChange}
+                      onChange={(e) => setLname(e.target.value)}
+                      value={lname}
                       placeholder="Your last name"
                     />
                   </div>
@@ -110,8 +124,7 @@ const UpdateDetailPage = () => {
                     type="email"
                     name="email"
                     disabled
-                    value={data.email}
-                    onChange={handleInputChange}
+                    value={loggedUserData?.email}
                     placeholder="Your email address"
                   />
                 </div>
@@ -120,6 +133,7 @@ const UpdateDetailPage = () => {
                   <button
                     className="bg-blue hover:bg-blue-dark text-black border font-bold py-2 px-4 rounded"
                     type="submit"
+                    onClick={handleSubmit}
                   >
                     Update Details
                   </button>

@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { useDataContext } from "../Context/DataContext";
 const Dashboard = () => {
   const [image, setImage] = useState(""); // State to store the selected image as a data URL
-
+  const {loggedUserData}  = useDataContext();
   // Function to handle the image selection
   const handleImageUpload = (e) => {
     const file = e.target.files[0]; // Get the selected file
@@ -55,7 +56,7 @@ const Dashboard = () => {
                   </svg>
                 </div>
                 <div>
-                  <span className="block text-2xl font-bold">Neeraj</span>
+                  <span className="block text-2xl font-bold">{loggedUserData?.fname}</span>
                   <span className="block text-gray-500">First Name</span>
                 </div>
               </div>
@@ -77,7 +78,7 @@ const Dashboard = () => {
                   </svg>
                 </div>
                 <div>
-                  <span className="block text-2xl font-bold">Choubisa</span>
+                  <span className="block text-2xl font-bold">{loggedUserData?.lname}</span>
                   <span className="block text-gray-500">Last Name</span>
                 </div>
               </div>
@@ -101,7 +102,7 @@ const Dashboard = () => {
               </div>
               <div>
                 <span className="block text-2xl font-bold">
-                  neerajchoubisa876@gmail.com
+                 {loggedUserData?.email}
                 </span>
                 <span className="block text-gray-500">Email</span>
               </div>

@@ -1,10 +1,6 @@
 const bcrypt = require("bcryptjs");
 const User = require("../models/userschema");
-const bodyParser = require("body-parser");
-const multer = require("multer");
 
-const storage = multer.memoryStorage(); // Store images in memory (you can configure file storage options)
-const upload = multer({ storage });
 
 const registerUser = async (req, res) => {
   const { fname, lname, email, password } = req.body;
@@ -63,22 +59,42 @@ const loginUser = async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 };
-const user = {
-  name: "Neeraj Choubisa",
-  email: "neerajchoubisa876@gmail.com",
-  profileImage: null, // Add a profile image field
-};
 
 const updateDetails = async (req, res) => {
-  const updatedData = req.body;
-  user.name = updatedData.name;
-  user.email = updatedData.email;
+  var obj = {
+    fname: req.body.fname,
+    lname: req.body.lname,
+    imgUrl: {
+      data: fs.readFileSync(
+        path.join(__dirname + "/uploads/" + req.file?.filename)
+      ),
+      contentType: "image/png",
+    },
+  };
 
-  if (req.file) {
-    user.profileImage = req.file.buffer; // Store image data in the user object
-  }
-
-  res.json({ message: "Profile updated successfully", user });
+  console.log(obj);
+  res.json({ message: "Profile updated successfully", obj });
 };
 
-module.exports = { registerUser, loginUser, updateDetails };
+const getUserData = async (req, res) => {
+  try {
+    // Retrieve the email parameter from the URL
+    const useremail = req.params.email;
+
+    // Find the user by email in the database
+    const user = await User.findOne({ email: useremail });
+
+    if (user) {
+      // If the user is found, send a success response with the user data
+      res.status(200).json({ status: "ok", data: user });
+    } else {
+      // If the user is not found, send a not found response
+      res.status(404).json({ status: "not found", message: "User not found" });
+    }
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+    res.status(500).json({ status: "error", data: error });
+  }
+};
+
+module.exports = { registerUser, loginUser, updateDetails, getUserData };
