@@ -2,24 +2,10 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useDataContext } from "../Context/DataContext";
 const Dashboard = () => {
-  const [image, setImage] = useState(""); // State to store the selected image as a data URL
   const {loggedUserData}  = useDataContext();
-  // Function to handle the image selection
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0]; // Get the selected file
+  const [image, setImage] = useState(loggedUserData?.imageUrl); // State to store the selected image as a data URL
 
-    if (file) {
-      const reader = new FileReader(); // Create a FileReader
-
-      // Set up a function to run when the FileReader finishes loading the file
-      reader.onload = () => {
-        setImage(reader.result); // Set the selected image as a data URL
-      };
-
-      // Read the selected file as a data URL
-      reader.readAsDataURL(file);
-    }
-  };
+ 
 
   return (
     <>

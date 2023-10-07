@@ -1,7 +1,5 @@
 const bcrypt = require("bcryptjs");
 const User = require("../models/userschema");
-
-
 const registerUser = async (req, res) => {
   const { fname, lname, email, password } = req.body;
 
@@ -36,7 +34,7 @@ const registerUser = async (req, res) => {
 
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
-  console.log(email, password);
+ 
   try {
     const user = await User.findOne({ email });
 
@@ -61,19 +59,29 @@ const loginUser = async (req, res) => {
 };
 
 const updateDetails = async (req, res) => {
-  var obj = {
-    fname: req.body.fname,
-    lname: req.body.lname,
-    imgUrl: {
-      data: fs.readFileSync(
-        path.join(__dirname + "/uploads/" + req.file?.filename)
-      ),
-      contentType: "image/png",
-    },
+  const file = req.file;
+  const url = req.protocol + '://' + req.get('host');
+  const emailToUpdate = req.params.email;
+  var updateData = {
+    imageUrl: url + '/uploads/' + req.file.filename
   };
+  console.log(emailToUpdate);
+  try {
+    const user = await User.findOneAndUpdate(
+      { email: emailToUpdate },
+      updateData,
+      { new: true }
+    );
 
-  console.log(obj);
-  res.json({ message: "Profile updated successfully", obj });
+    if (user) {
+      res.json({ message: "User updated successfully", user });
+    } else {
+      res.status(404).json({ error: "User not found" });
+    }
+  } catch (error) {
+    console.error("Error updating user:", error);
+    res.status(500).json({ error: "User update failed" });
+  }
 };
 
 const getUserData = async (req, res) => {
