@@ -185,14 +185,7 @@ const RegistrationPage = () => {
           </div>
         </div>
 
-        <footer className="w-full bg-grey-lighter py-8">
-          <div className="container mx-auto text-center px-8">
-            <p className="text-grey-dark mb-2 text-sm">
-              This is a product of{" "}
-              <span className="font-bold">Health-Sphere</span>
-            </p>
-          </div>
-        </footer>
+      
       </div>
     </>
   );

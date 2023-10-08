@@ -73,7 +73,7 @@ const LoginUser = () => {
           <div className="container mx-auto py-8">
             <div className="w-5/6 lg:w-1/2 mx-auto bg-white">
               <div className="py-4 px-8 text-black text-xl border-b border-grey-lighter">
-                Register for a free account
+                Login
               </div>
               <div className="py-4 px-8">
                 <div className="mb-4">
@@ -134,14 +134,7 @@ const LoginUser = () => {
           </div>
         </div>
 
-        <footer className="w-full bg-grey-lighter py-8">
-          <div className="container mx-auto text-center px-8">
-            <p className="text-grey-dark mb-2 text-sm">
-              This is a product of{" "}
-              <span className="font-bold">Health-Sphere</span>
-            </p>
-          </div>
-        </footer>
+       
       </div>
     </>
   );

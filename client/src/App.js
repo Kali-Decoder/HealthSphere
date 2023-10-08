@@ -6,6 +6,8 @@ import { Routes,Route } from "react-router-dom";
 import LoginUser from "./pages/LoginUser";
 import Dashboard from "./pages/Dashboard";
 import UpdateDetailPage from "./pages/UpdateDetailPage";
+import AbhaPage from "./pages/AbhaPage";
+import Footer from "./components/Footer";
 function App() {
   return (
     <>
@@ -26,7 +28,10 @@ function App() {
         <Route exact path="/login" element={<LoginUser />}  />
         <Route exact path="/dashboard" element={<Dashboard />}  />
         <Route exact path="/edit-profile" element={<UpdateDetailPage />}  />
+        <Route exact path="/get-abha" element={<AbhaPage />}  />
+        
       </Routes>
+      <Footer/>
       
     </>
   );
