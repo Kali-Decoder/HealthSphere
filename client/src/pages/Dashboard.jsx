@@ -3,10 +3,7 @@ import { Link } from "react-router-dom";
 import { useDataContext } from "../Context/DataContext";
 const Dashboard = () => {
   const {loggedUserData}  = useDataContext();
-  const [image, setImage] = useState(loggedUserData?.imageUrl); // State to store the selected image as a data URL
-
- 
-
+  const [image, setImage] = useState(loggedUserData?.imageUrl);
   return (
     <>
       <main className="p-6 sm:p-10 space-y-6 container mx-auto">
@@ -19,7 +16,7 @@ const Dashboard = () => {
         </div>
         <div className="grid grid-cols-2 gap-0">
           <div className="profile-pic ">
-            {image ? <img src={image} className="border shadow-2xl  " width="400" alt="profile pic" />: <img src="http://i.pravatar.cc/500?img=7" className="border shadow-2xl  " width="400" alt="profile pic" />}
+            {image ? <img src={`../uploads/${image}`} className="border shadow-2xl  " width="400" alt="profile pic" />: <img src="http://i.pravatar.cc/500?img=7" className="border shadow-2xl  " width="400" alt="profile pic" />}
           </div>
 
           <div>

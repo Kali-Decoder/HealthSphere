@@ -60,12 +60,39 @@ const loginUser = async (req, res) => {
 
 const updateDetails = async (req, res) => {
   const file = req.file;
-  const url = req.protocol + '://' + req.get('host');
+  if(!file){
+    res.json({ error: "Please Upload File"});
+    return;
+  }
   const emailToUpdate = req.params.email;
   var updateData = {
-    imageUrl: url + '/uploads/' + req.file.filename
+    imageUrl: req.file.filename
   };
   console.log(emailToUpdate);
+  try {
+    const user = await User.findOneAndUpdate(
+      { email: emailToUpdate },
+      updateData,
+      { new: true }
+    );
+
+    if (user) {
+      res.status(200).json({ message: "image upload Successfully", user });
+    } else {
+      res.status(404).json({ error: "User not found" });
+    }
+  } catch (error) {
+    console.error("Error updating user:", error);
+    res.status(500).json({ error: "User update failed" });
+  }
+};
+
+const updateTextDetails=async(req,res)=>{
+  const emailToUpdate = req.params.email;
+  var updateData = {
+    fname: req.body.fname,
+    lname: req.body.lname,
+  };
   try {
     const user = await User.findOneAndUpdate(
       { email: emailToUpdate },
@@ -82,8 +109,7 @@ const updateDetails = async (req, res) => {
     console.error("Error updating user:", error);
     res.status(500).json({ error: "User update failed" });
   }
-};
-
+}
 const getUserData = async (req, res) => {
   try {
     // Retrieve the email parameter from the URL
@@ -105,4 +131,4 @@ const getUserData = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser, updateDetails, getUserData };
+module.exports = { registerUser, loginUser, updateDetails, getUserData ,updateTextDetails};
